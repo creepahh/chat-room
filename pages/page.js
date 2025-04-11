@@ -13,8 +13,8 @@ export default function ChatPage() {
 
     useEffect(() => {
         if (isUsernameSet) {
-
-            socket = io({ path: '/api/socket' })
+            fetch('/api/socket') // initializes Socket.IO server (server-side)
+            socket = io({ path: '/api/socket' }) // client connects to that path
 
             socket.on('message', (msg) => {
                 setMessages(prev => [...prev, msg])
@@ -40,16 +40,15 @@ export default function ChatPage() {
             id: Date.now()
         }
 
-        setMessages(prev => [...prev, msg]) //local state updated by new msg 
+        setMessages(prev => [...prev, msg])
         socket.emit('message', msg)
         setInput('')
     }
 
     return (
         <div className="flex flex-col h-screen p-4 bg-[#f5f5dc] text-black">
-            <h1 className="text-2xl font-bold mb-4 text-center">💬 Real-time Chatroom</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center">💬 Chatroom Thingy</h1>
 
-            {/* Set Username */}
             {!isUsernameSet && (
                 <div className="flex flex-col items-center mb-4">
                     <input
@@ -67,28 +66,23 @@ export default function ChatPage() {
                 </div>
             )}
 
-            {/* Messages Display */}
             <div className="flex-1 overflow-y-auto mb-6 border rounded p-4 bg-[#fffaf0] shadow-inner space-y-2">
                 {messages.map((msg) => {
-                    const isOwnMessage = msg.sender === username;
+                    const isOwnMessage = msg.sender === username
                     return (
-                        <div
-                            key={msg.id}
-                            className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
-                        >
+                        <div key={msg.id} className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-xs px-4 py-2 rounded-lg shadow 
-                        ${isOwnMessage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}`}>
+                                ${isOwnMessage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}`}>
                                 <strong className="block text-sm">
                                     {isOwnMessage ? 'You' : msg.sender}
                                 </strong>
                                 <span>{msg.text}</span>
                             </div>
                         </div>
-                    );
+                    )
                 })}
             </div>
 
-            {/* Input Box */}
             <div className="flex gap-2 mt-auto pt-2">
                 <input
                     className="flex-1 border border-gray-400 p-2 rounded shadow"
@@ -105,6 +99,5 @@ export default function ChatPage() {
                 </button>
             </div>
         </div>
-
     )
 }

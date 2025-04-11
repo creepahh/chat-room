@@ -13,10 +13,14 @@ export default function handler(req, res) {
         res.socket.server.io = io
 
         io.on("connection", (socket) => {
-            console.log("A user connected ✨")
+            console.log("✨ A user connected")
 
             socket.on("message", (msg) => {
-                socket.broadcast.emit("message", msg) // send to all *except* sender
+                socket.broadcast.emit("message", msg)
+            })
+
+            socket.on("disconnect", () => {
+                console.log("👋 A user disconnected")
             })
         })
     }
