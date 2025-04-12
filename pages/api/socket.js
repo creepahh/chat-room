@@ -7,20 +7,16 @@ export default function handler(req, res) {
         console.log("🔌 Starting Socket.IO server...")
 
         io = new Server(res.socket.server, {
-            path: "/api/socket",
+            path: "/api/socket", // Custom path for Socket.io
         })
 
         res.socket.server.io = io
 
         io.on("connection", (socket) => {
-            console.log("✨ A user connected")
+            console.log("A user connected ✨")
 
             socket.on("message", (msg) => {
-                socket.broadcast.emit("message", msg)
-            })
-
-            socket.on("disconnect", () => {
-                console.log("👋 A user disconnected")
+                socket.broadcast.emit("message", msg) // Send to everyone except the sender
             })
         })
     }
